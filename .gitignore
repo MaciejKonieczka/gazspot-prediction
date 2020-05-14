@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Data folder
+data/
+
+#virtual env 
+gazspot-prediction/
+ 
+# vscode
+.vscode
