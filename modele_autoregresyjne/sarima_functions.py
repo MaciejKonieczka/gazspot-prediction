@@ -16,6 +16,8 @@ from warnings import filterwarnings
 
 def check_stationary(df_series):
     # podziął na dwa zbiory
+    df_series = df_series.copy()
+    df_series.dropna(inplace=True)
     first_half = df_series.iloc[:len(df_series)//2]
     second_half = df_series.iloc[len(df_series)//2:]
     print(f"Means: 1st half: {first_half.mean()}, 2nd half: {second_half.mean()}")
@@ -24,7 +26,7 @@ def check_stationary(df_series):
     result = adfuller(df_series)
     print("______ADFuller Test______")
     print(f'ADF Statistic: {result[0]}')
-    print(f'p-value: {result[0]}')
+    print(f'p-value: {result[1]}')
     print('Critical Values:')
     for key, value in result[4].items():
         print(f'\t{key}: {value}')
@@ -32,7 +34,7 @@ def check_stationary(df_series):
 
 def plot_decomposition(df_series):
     decomposition = seasonal_decompose(df_series)
-    return decomposition.plot()
+    return decomposition
 
 
 def sarima_forecast(history_df, sarima_config, n_steps=1):
