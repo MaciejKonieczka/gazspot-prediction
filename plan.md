@@ -15,10 +15,21 @@
 ### LSTM:
 1. Instalacja tensorflow 2.0
 2. Przygotowanie danych do sieci
-3. Wybór różnych okien czasowych do sieci (7, 14, 28, 90)
+3. Wybór różnych okien czasowych do sieci (7, 14, 28, 90 dni)
 4. Implemetnacja sieci
 5. Trening sieci
 6. Ewaluacja wyników
 
 
+### SARIMAX:
+1. Korelacja kontraktów tygodniowych, miesiecznych
+2. Normalizacja? 
+3. Uzupelnienie pustych wierszy (ffill)
+4. Sarimax z dodaniem zmiennych, wszystkie kombinacje?
+5. Ewaluacja
+
+### LSTM 2:
+1. Modyfikacja sieci
+2. Trening
+3. wyniki
 
