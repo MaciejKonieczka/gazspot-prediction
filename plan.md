@@ -3,7 +3,13 @@
 ## TODO:
 ### BASIC:
 1. Wybór metryki (RMSE lub MAE)
+- RMSE jako główna metryka
+- MAE jako metryka pomocnicza przy ewaluacji
+- Dodatkowa metryka (jak się uda) - Trend (rosnący/malejący/ ze brak zmiany 5 procentyl zmian dzień do dnia (może procentowo?))   
 2. Podział na zbiory treningowy i testowy
+- Zbiór treningowy [2017-]
+- Zbiór testowy [2019-07-01 - 2020-04-30]
+
 
 ### SARIMA:
 1. Optymalizacja hiperparametrów SARIMA (bez trendu, z sezonowością 7 dni)
