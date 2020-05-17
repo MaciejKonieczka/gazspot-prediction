@@ -80,29 +80,7 @@ def timeseries_plot(df, title, ylabel, xlabel, save_file=''):
 ###############################################
 
 # wczytanie plików
-spot_filename = 'data/tge_spot.p'
-spot_df = pd.read_pickle(spot_filename)[['Price']]
-spot_df.rename(columns={'Price': 'TGEgasDA'}, inplace=True)
-
-
-# Brakuące dni dostawy na RDN
-data_range = pd.date_range(spot_df.index.min(), spot_df.index.max())
-missing_dates = set(data_range) - set(spot_df.index)
-print("Brakujące dni:")
-[print(i.strftime("%d-%m-%Y")) for i in missing_dates]
-
-
-###### >>>> 1 uzupełnienie braku transakcji za pomocą metody fill forward
-spot_ffill_df = spot_df.resample('1d').mean()
-spot_ffill_df[spot_ffill_df.index.isin(missing_dates) \
-    | spot_ffill_df.index.shift(1).isin(missing_dates) \
-    | spot_ffill_df.index.shift(-1).isin(missing_dates) ]
-
-spot_ffill_df['TGEgasDA'] = spot_ffill_df['TGEgasDA'].ffill()
-spot_ffill_df[spot_ffill_df.index.isin(missing_dates) \
-    | spot_ffill_df.index.shift(1).isin(missing_dates) \
-    | spot_ffill_df.index.shift(-1).isin(missing_dates) ]
-
+spot_df = pd.read_pickle("data/tge_spot_preprocessed.p")
 
 ######################################
 ######################################
@@ -115,7 +93,7 @@ spot_ffill_df[spot_ffill_df.index.isin(missing_dates) \
 print(">>>>>> Zwykły przebieg <<<<<<")
 Path("Documentation/TGEgasDA").mkdir(parents=True, exist_ok=True)
 timeseries_plot(
-    df=spot_ffill_df, 
+    df=spot_df, 
     title="Cena rozliczeniowa na Rynku Dnia Następnego na TGE",
     ylabel="Cena [PLN/MWh]",
     xlabel="Dzień dostawy kontraktu",
@@ -123,20 +101,20 @@ timeseries_plot(
     )
 
 ### Test ADFullera
-check_stationary(spot_ffill_df['TGEgasDA'])
+check_stationary(spot_df['TGEgasDA'])
 # Wykres zmianny średniej i zmiany odchylenia standardowego
 for roll in [7, 30, 90, 365]:
     rolling_plot(
-        df=spot_ffill_df,
+        df=spot_df,
         title="Przebieg średniej i odchylenia standardowego ceny rozliczeniowej TGEgasDA",
         ylabel="Cena [PLN/MWh]",
         xlabel="Dzień dostawy kontraktu - koniec okna czasowego",
         roll=roll,
         save_file='Documentation/TGEgasDA/series')
 
-for time_ in ['2019Q1', '2018Q4']:
+for time_ in ['2017Q4', '2019Q1']:
     decomposition_plot(
-        df=spot_ffill_df,
+        df=spot_df,
         title="Dekompozycja sezonowa ceny rozliczeniowej TGEgasDA",
         ylabel="Cena [PLN/MWh]",
         time_=time_,
@@ -149,7 +127,7 @@ for time_ in ['2019Q1', '2018Q4']:
 print(">>>>>> Zmiana (diff) <<<<<<")
 Path("Documentation/TGEgasDA_diff").mkdir(parents=True, exist_ok=True)
 
-spot_diff_ = spot_ffill_df[['TGEgasDA']].diff()
+spot_diff_ = spot_df[['TGEgasDA']].diff()
 check_stationary(spot_diff_)
 
 timeseries_plot(spot_diff_,
@@ -167,7 +145,7 @@ for roll in [7, 30, 90, 365]:
         roll=roll,
         save_file="Documentation/TGEgasDA_diff/series")
 
-for time_ in ['2019Q1', '2018Q4']:
+for time_ in ['2017Q4', '2019Q1']:
     decomposition_plot(
         df=spot_diff_,
         title="Dekompozycja sezonowa zmiany dzień do dnia ceny rozliczeniowej TGEgasDA",
@@ -184,7 +162,7 @@ print(">>>>>> Zmiana procentowa (pct_change)<<<<<<")
 
 Path("Documentation/TGEgasDA_pctchange").mkdir(parents=True, exist_ok=True)
 
-spot_pct_change_ = spot_ffill_df[['TGEgasDA']].pct_change()
+spot_pct_change_ = spot_df[['TGEgasDA']].pct_change()
 check_stationary(spot_pct_change_)
 
 
@@ -203,7 +181,7 @@ for roll in [7, 30, 90, 365]:
         roll=roll,
         save_file="Documentation/TGEgasDA_pctchange/series")
 
-for time_ in ['2019Q1', '2018Q4']:
+for time_ in ['2017Q4', '2019Q1']:
     decomposition_plot(
         df=spot_pct_change_,
         title="Dekompozycja sezonowa zmiany procentowej dzień do dnia ceny rozliczeniowej TGEgasDA",

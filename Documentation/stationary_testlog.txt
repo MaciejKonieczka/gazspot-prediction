@@ -1,0 +1,38 @@
+>>>>>> Zwykły przebieg <<<<<<
+Means: 1st half: 74.70368157062236, 2nd half: 79.1556084331219
+Std: 1st half: 12.615499435153898, 2nd half: 26.783217781723774
+______ADFuller Test______
+ADF Statistic: -1.580205423179785
+p-value: 0.4935288827501385
+Critical Values:
+	1%: -3.4345541763756704
+	5%: -2.8633968896546276
+	10%: -2.567758576991337
+>>>>>> Zmiana (diff) <<<<<<
+Means: 1st half: TGEgasDA    0.172556
+dtype: float64, 2nd half: TGEgasDA   -0.223267
+dtype: float64
+Std: 1st half: TGEgasDA    3.510771
+dtype: float64, 2nd half: TGEgasDA    4.103401
+dtype: float64
+______ADFuller Test______
+ADF Statistic: -9.445820811857239
+p-value: 4.758922546629802e-16
+Critical Values:
+	1%: -3.4345541763756704
+	5%: -2.8633968896546276
+	10%: -2.567758576991337
+>>>>>> Zmiana procentowa (pct_change)<<<<<<
+Means: 1st half: TGEgasDA    0.00216
+dtype: float64, 2nd half: TGEgasDA   -0.001024
+dtype: float64
+Std: 1st half: TGEgasDA    0.0412
+dtype: float64, 2nd half: TGEgasDA    0.051684
+dtype: float64
+______ADFuller Test______
+ADF Statistic: -8.388903869392095
+p-value: 2.396248837941678e-13
+Critical Values:
+	1%: -3.4345514752023365
+	5%: -2.863395697445539
+	10%: -2.567757942139848
