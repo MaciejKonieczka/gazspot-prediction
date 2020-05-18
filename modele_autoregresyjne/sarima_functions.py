@@ -39,7 +39,8 @@ def plot_decomposition(df_series):
 
 def sarima_forecast(history_df, sarima_config, n_steps=1):
     order, sorder, trend = sarima_config
-    model = SARIMAX(history_df, order=order, seasonal_order=sorder, trend=trend)
+    # model = SARIMAX(history_df, order=order, seasonal_order=sorder, trend=trend)
+    model = SARIMAX(history_df, order=order, seasonal_order=sorder, enforce_stationarity=False)
     model_fit = model.fit(disp=False)
     yhat = model_fit.predict(len(history_df), len(history_df) + n_steps - 1)
     return yhat[:n_steps]
@@ -47,7 +48,7 @@ def sarima_forecast(history_df, sarima_config, n_steps=1):
 
 def possible_config(
     p_params = [0, 1, 2],
-    d_params = [1],
+    d_params = [0],
     q_params = [0, 1],
     t_params = ['c','t','ct'],
     P_params = [0, 1, 2],
@@ -61,25 +62,27 @@ def possible_config(
     return models
 
 
-def grid_search(data, cfg_list, n_test, parallel=True):
+def grid_search(data, cfg_list, n_test, parallel=True, n_history=0):
     scores = None
     if parallel:
         executor = Parallel(n_jobs=cpu_count(), backend='multiprocessing')
-        tasks = (delayed(_score_model)(data, n_test, cfg) for cfg in cfg_list)
+        tasks = (delayed(_score_model)(data, n_test, cfg, n_history) for cfg in cfg_list)
         scores = executor(tasks)
     else:
-        scores = [_score_model(data, n_test, cfg) for cfg in cfg_list]
+        scores = [_score_model(data, n_test, cfg, n_history) for cfg in cfg_list]
 
     scores = [r for r in scores if r[1] != None]
     scores.sort(key=lambda tup: tup[1])
     return scores
 
 
-def _walk_forward_validation(data, n_test, cfg, recive_data=False):
+def _walk_forward_validation(data, n_test, cfg, n_history=0, recive_data=False):
     predictions = list()
     train, test = _train_test_split(data, n_test)
     history = [x for x in train]
+
     for i in range(len(test)):
+        history = history[-n_history:]
         yhat = sarima_forecast(history, cfg)
         predictions.append(yhat)
         history.append(test[i])
@@ -95,23 +98,23 @@ def _train_test_split(df, n_test):
     return df[:-n_test], df[-n_test:]
 
 
-def _score_model(data, n_test, cfg, debug=False):
+def _score_model(data, n_test, cfg, n_history=0, debug=False):
     result = None
     # convert config to a key
     key = str(cfg)
     # show all warnings and fail on exception if debugging
     if debug:
-        result = _walk_forward_validation(data, n_test, cfg)
+        result = _walk_forward_validation(data, n_test, cfg, n_history)
     else:
         # one failure during model validation suggests an unstable config
         try:
             # never show warnings when grid searching, too noisy
             with catch_warnings():
                 filterwarnings("ignore")
-                result = _walk_forward_validation(data, n_test, cfg)
+                result = _walk_forward_validation(data, n_test, cfg, n_history)
         except:
-            print('błąd')
+            print(f'{key}: RMSE= NaN')
     # check for an interesting result
     if result is not None:
-        print(' > Model[%s] %.3f' % (key, result))
+        print(f'{key}: RMSE={result}')
     return (key, result)

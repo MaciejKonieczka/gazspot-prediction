@@ -6,6 +6,3 @@ spot_df = pd.read_pickle('data/tge_spot_preprocessed.p')
 
 
 
-plt.show()
-
-
