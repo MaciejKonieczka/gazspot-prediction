@@ -37,8 +37,8 @@ cfgs_ = possible_config(
 
 
 df_ = spot_df.diff().dropna()
-df_train = spot_df.loc[train_index[0]:train_index[1]]
-df_val = spot_df.loc[val_index[0]:val_index[1]]
+df_train = df_.loc[train_index[0]:train_index[1]]
+df_val = df_.loc[val_index[0]:val_index[1]]
 n_test = len(df_val)
 # grid_search(data = df_train['TGEgasDA'],
 #     cfg_list=cfgs_, 
@@ -60,8 +60,8 @@ for window in [3000, 730, 365, 90]:
 #### PCT change
 print(">>>pct change<<<<<")
 df_ = spot_df.pct_change().dropna()
-df_train = spot_df.loc[train_index[0]:train_index[1]]
-df_val = spot_df.loc[val_index[0]:val_index[1]]
+df_train = df_.loc[train_index[0]:train_index[1]]
+df_val = df_.loc[val_index[0]:val_index[1]]
 n_test = len(df_val)
 # grid_search(data = df_train['TGEgasDA'],
 #     cfg_list=cfgs_, 

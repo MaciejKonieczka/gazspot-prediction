@@ -113,8 +113,8 @@ def _score_model(data, n_test, cfg, n_history=0, debug=False):
                 filterwarnings("ignore")
                 result = _walk_forward_validation(data, n_test, cfg, n_history)
         except:
-            print(f'{key}: RMSE= NaN')
+            print(f'{n_history}, {key}: RMSE= NaN')
     # check for an interesting result
     if result is not None:
-        print(f'{key}: RMSE={result}')
+        print(f'{n_history}, {key}: RMSE= {result}')
     return (key, result)
