@@ -151,10 +151,9 @@ for idx in range(1,6):
 
 # pct
 for idx in range(7,8):
-    
+    cfg_title = cfgs_best[idx][:2]
     df_forecast = pd.read_pickle(f'forecast/pct_change/sarima_forecast_{idx}.p')
 
-    cfg_title = cfgs_best[idx][:2]
     file_name = '-'.join([str(i) for i in cfg_title[0]]) + '_' + '-'.join([str(i) for i in cfg_title[1]])
     
     title = f"Prognoza TGEgasDA modelu SARIMA {cfg_title}"
@@ -183,3 +182,12 @@ for idx in range(7,8):
                         ['Cena [PLN/MWh]', 'Błąd bezwzględny [PLN/MWh]'], 
                         'Dzień dostawy kontraktu', 
                         save_file=f'Documentation/SARIMA_forecast_pct_change_{file_name}_test')
+
+
+
+
+# for idx in range(1,6):
+#     cfg_title = cfgs_best[idx][:2]
+#     file_name = '-'.join([str(i) for i in cfg_title[0]]) + '_' + '-'.join([str(i) for i in cfg_title[1]])
+#     df_forecast = pd.read_pickle(f'forecast/diff/sarima_forecast_{idx}.p')
+#     df_forecast.to_pickle(f'forecast/diff/sarima_{file_name}.p', protocol=2)
