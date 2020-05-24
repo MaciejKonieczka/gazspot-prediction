@@ -2,7 +2,9 @@ import pandas as pd
 import numpy as np
 import random
 import sys
-sys.path.append('/home/maciej/Documents/gazspot-prediction/')
+# sys.path.append('/home/maciej/Documents/gazspot-prediction/preprocessing_danych')
+sys.path.append('/data/mkonieczka/gazspot-prediction/')
+
 import time
 
 from preprocessing_danych.dataset_config import *
@@ -28,9 +30,19 @@ def build_model(input_shape,
     model = Sequential()
 
 
-    model.add(LSTM(rnn_size, input_shape=(input_shape)))
+    model.add(LSTM(rnn_size, input_shape=(input_shape), return_sequences=True))
     if (dropout_level > 0): model.add(Dropout(dropout_level))
     if batch_normalization: model.add(BatchNormalization())
+
+    model.add(LSTM(rnn_size, return_sequences=True))
+    if (dropout_level > 0): model.add(Dropout(dropout_level))
+    if batch_normalization: model.add(BatchNormalization())
+    
+    model.add(LSTM(rnn_size))
+    if (dropout_level > 0): model.add(Dropout(dropout_level))
+    if batch_normalization: model.add(BatchNormalization())
+
+
     if (hidden_dense_layer_size > 0):
         model.add(Dense(hidden_dense_layer_size, activation='relu'))
         if (dropout_level > 0): model.add(Dropout(0.2))
@@ -82,7 +94,7 @@ sequence_sizes = [7, 14, 21, 28, 49]
 
 # LSTM configs 
 
-MODEL_TYPE = 'LSTM1'
+MODEL_TYPE = 'LSTM3'
 EPOCHS = 30
 
 rnn_sizes = [64, 256]
@@ -98,8 +110,8 @@ batch_sizes = [8]
 
 # Wczytanie danych
 # df = pd.read_csv("/content/drive/My Drive/Mgr_gas_transaction/tge_spot_preprocessed.csv",index_col=['TransactionDate'], parse_dates=['TransactionDate'])
-df = pd.read_pickle("data/tge_spot_preprocessed.p")
-
+# df = pd.read_pickle("data/tge_spot_preprocessed.p")
+df = pd.read_csv("data/tge_spot_preprocessed.csv", index_col=['TransactionDate'], parse_dates=['TransactionDate'])
 for diff_function in diff_functions:
     if (diff_function == 'pct_change'):
         df_new = df.pct_change().dropna()
@@ -165,42 +177,3 @@ for diff_function in diff_functions:
                                         pred_y = scaler.inverse_transform(model.predict(val_X))
                                         true_y = scaler.inverse_transform(val_y)
                                         print(f"RMSE_val = {mse(true_y, pred_y) ** (1/2)}")
-
-
-
-
-
-
-
-
-
-# # scaler.inverse_transform(train_y.reshape(-1,1))
-# # scaler.inverse_transform(model.predict(train_X))
-
-# data = 
-# # df_true = df[train_index[0]: val_index[0]][:-1]
-# # df_true = df[test_index[0]: test_index[1]]
-# df_true = df[val_index[0]: val_index[1]]
-
-# df_true['pct_change'] = df_true['TGEgasDA'].pct_change()
-# df_true['TGEgasDA_shift'] = df_true['TGEgasDA'].shift()
-# df_true.dropna(inplace=True)
-# df_true = df_true[TIME_WINDOW_LEN:]
-# print(len(df_true))
-# print(len(data))
-# df_true['pred'] = data[1:]
-# df_true['TGEgasDA_pred'] = df_true['TGEgasDA_shift'] + df_true['TGEgasDA_shift'] * df_true['pred']
-# df_true[-30:]
-
-# mse(df_true['pct_change'], df_true['pred']) ** (1/2)
-
-# df_true[['pct_change','pred']].plot(figsize=(20,4))
-
-# mse(df_true['TGEgasDA'][1:],df_true['TGEgasDA_pred'].shift().dropna()) ** (1/2)
-
-# mse(df_true['TGEgasDA'],df_true['TGEgasDA_pred']) ** (1/2)
-
-# df_true[['TGEgasDA','TGEgasDA_pred']].plot(figsize=(20,4))
-
-
-# # TODO: print RMSE on val_dataset _ invert on scaler

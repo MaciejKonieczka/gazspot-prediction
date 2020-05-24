@@ -39,8 +39,10 @@ def plot_decomposition(df_series):
 
 def sarima_forecast(history_df, sarima_config, n_steps=1):
     order, sorder, trend = sarima_config
-    # model = SARIMAX(history_df, order=order, seasonal_order=sorder, trend=trend)
-    model = SARIMAX(history_df, order=order, seasonal_order=sorder, enforce_stationarity=False)
+    if trend == None:
+        model = SARIMAX(history_df, order=order, seasonal_order=sorder, enforce_stationarity=False)
+    else: 
+        model = SARIMAX(history_df, order=order, seasonal_order=sorder, trend=trend)
     model_fit = model.fit(disp=False)
     yhat = model_fit.predict(len(history_df), len(history_df) + n_steps - 1)
     return yhat[:n_steps]

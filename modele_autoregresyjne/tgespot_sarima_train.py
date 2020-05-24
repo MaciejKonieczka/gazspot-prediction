@@ -7,11 +7,12 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 plt.style.use('ggplot')
 
 import sys
-sys.path.append('/home/maciej/Documents/gazspot-prediction/')
+sys.path.append('/home/maciej/Documents/gazspot-prediction/modele_autoregresyjne')
+sys.path.append('/home/maciej/Documents/gazspot-prediction/preprocessing_danych')
 
-from modele_autoregresyjne.sarima_functions import plot_decomposition, possible_config, grid_search, sarima_forecast, check_stationary
+from sarima_functions import plot_decomposition, possible_config, grid_search, sarima_forecast, check_stationary
 
-from preprocessing_danych.dataset_config import test_index, train_index, val_index
+from dataset_config import test_index, train_index, val_index
 
 
 

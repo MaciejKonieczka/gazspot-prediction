@@ -139,4 +139,4 @@ gazspot-prediction/
 .vscode
 
 # ann results
-LSTN1_results/
+LSTM/LSTM*
